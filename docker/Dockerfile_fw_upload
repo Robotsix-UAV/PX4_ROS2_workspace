@@ -1,0 +1,3 @@
+FROM px4io/px4-dev-nuttx-jammy:latest
+
+RUN pip install pyserial

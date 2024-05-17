@@ -1,0 +1,38 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+RUN apt-get update -qq \
+    && apt-get install -y \
+    wget \
+    curl \
+    lsb-release \
+    git \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && chmod a+x /usr/local/bin/yq
+
+RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg\
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+
+RUN cat /etc/apt/sources.list.d/gazebo-stable.list
+
+ENV GZ_VERSION=harmonic
+RUN apt-get update -qq \
+    && apt-get install -y \
+    gz-${GZ_VERSION} \
+    tmuxinator \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git \
+    && cd Micro-XRCE-DDS-Agent \
+    && git checkout v2.4.3 \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && make \
+    && make install \
+    && ldconfig

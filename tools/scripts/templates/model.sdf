@@ -1,0 +1,273 @@
+<sdf version='1.9'>
+  <model name='{{ model_name }}'>
+    <pose>0 0 0 0 0 0</pose>
+    <self_collide>false</self_collide>
+    <static>false</static>
+    <link name="base_link">
+      <inertial>
+        <mass>{{ weight }}</mass>
+        <inertia>
+          <ixx>{{ Ixx }}</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>{{ Iyy }}</iyy>
+          <iyz>0</iyz>
+          <izz>{{ Izz }}</izz>
+        </inertia>
+      </inertial>
+      <gravity>true</gravity>
+      <velocity_decay />
+      <visual name='base_link_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>{{ arm_length / 10 }}</radius>
+            <length>{{ arm_length / 50 }}</length>
+          </cylinder>
+        </geometry>
+        <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+        </material>
+      </visual>
+      <collision name='base_link_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>{{ arm_length / 10 }}</radius>
+            <length>{{ arm_length / 50 }}</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <min_depth>0.001</min_depth>
+              <max_vel>0</max_vel>
+            </ode>
+          </contact>
+          <friction>
+            <ode />
+          </friction>
+        </surface>
+      </collision>
+      <sensor name="imu_sensor" type="imu">
+        <always_on>1</always_on>
+        <update_rate>250</update_rate>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.00018665</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.00018665</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.00018665</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.00186</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.00186</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.00186</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+      <sensor name="air_pressure_sensor" type="air_pressure">
+        <always_on>1</always_on>
+        <update_rate>50</update_rate>
+        <air_pressure>
+          <pressure>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </pressure>
+        </air_pressure>
+      </sensor>
+      <sensor name="navsat_sensor" type="navsat">
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+      </sensor>
+    </link>
+    {% for angle in arm_angles %}
+    <link name="arm_{{ loop.index0 }}">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <velocity_decay />
+      <pose>0 0 0 0 0 {{ angle }}</pose>
+      <inertial>
+        <mass>1e-9</mass>
+        <inertia>
+          <ixx>1e-9</ixx>
+          <iyy>1e-9</iyy>
+          <izz>1e-9</izz>
+        </inertia>
+      </inertial>
+      <visual name='arm_{{ loop.index0 }}_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>{{ arm_length * 2 }} {{ arm_length / 20 }} {{ arm_length / 50 }}</size>
+          </box>
+        </geometry>
+        <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+        </material>
+      </visual>
+      <collision name='arm_{{ loop.index0 }}_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>{{ arm_length * 2 }} {{ arm_length / 20 }} {{ arm_length / 50 }}</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <min_depth>0.001</min_depth>
+              <max_vel>0</max_vel>
+            </ode>
+          </contact>
+          <friction>
+            <ode />
+          </friction>
+        </surface>
+      </collision>
+    </link>
+    {% endfor %}
+    {% for pos in motor_positions %}
+    <link name="rotor_{{ loop.index0 }}">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <velocity_decay />
+      <pose>{{ pos[0] }} {{ pos[1] }} {{ pos[2] + arm_length/50 }} 0 0 0</pose>
+      <inertial>
+        <mass>1e-9</mass>
+        <inertia>
+          <ixx>1e-9</ixx>
+          <iyy>1e-9</iyy>
+          <izz>1e-9</izz>
+        </inertia>
+      </inertial>
+      <visual name='rotor_{{ loop.index0 }}_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            {% if first_motor_cw %}
+            <uri>model://{{ model_name }}/meshes/prop_{{ 'cw' if loop.index0 % 2 == 0 else 'ccw' }}.dae</uri>
+            {% else %}
+            <uri>model://{{ model_name }}/meshes/prop_{{ 'ccw' if loop.index0 % 2 == 0 else 'cw' }}.dae</uri>
+            {% endif %}
+          </mesh>
+        </geometry>
+        {% if loop.index0 % 2 == 0 %}
+        <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+            <specular>0 0 1 1</specular>
+        </material>
+        {% else %}
+        <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>1 0 0 1</specular>
+        </material>
+        {% endif %}
+      </visual>
+      <collision name='rotor_{{ loop.index0 }}_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode />
+          </contact>
+          <friction>
+            <ode />
+          </friction>
+        </surface>
+      </collision>
+    </link>
+    <joint name='rotor_{{ loop.index0 }}_joint' type='revolute'>
+      <child>rotor_{{ loop.index0 }}</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <plugin filename="gz-sim-multicopter-motor-model-system"
+            name="gz::sim::systems::MulticopterMotorModel">
+      <jointName>rotor_{{ loop.index0 }}_joint</jointName>
+      <linkName>rotor_{{ loop.index0 }}</linkName>
+      {% if first_motor_cw %}
+      <turningDirection>{{ 'cw' if loop.index0 % 2 == 0 else 'ccw' }}</turningDirection>
+      {% else %}
+      <turningDirection>{{ 'ccw' if loop.index0 % 2 == 0 else 'cw' }}</turningDirection>
+      {% endif %}
+      <timeConstantUp>0.0</timeConstantUp>
+      <timeConstantDown>0.0</timeConstantDown>
+      <maxRotVelocity>1000.0</maxRotVelocity>
+      <motorConstant>{{ max_motor_thrust }}e-6</motorConstant>
+      <momentConstant>0.05</momentConstant>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
+      <motorNumber>{{ loop.index0 }}</motorNumber>
+      <rotorDragCoefficient>0.0</rotorDragCoefficient>
+      <rollingMomentCoefficient>0.0</rollingMomentCoefficient>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      <motorType>velocity</motorType>
+    </plugin>
+    {% endfor %}
+  </model>
+</sdf>

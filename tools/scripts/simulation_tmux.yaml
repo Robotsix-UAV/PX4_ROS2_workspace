@@ -1,0 +1,22 @@
+name: px4_sitl
+project_root: .
+
+<% MODEL_LIST = @settings["MODEL_LIST"].split(":") %>
+<% MODEL_POSITIONS = @settings["MODEL_POSITIONS"].split(":") %>
+<% PX4_GZ_WORLDS= @settings["PX4_DIR"] + "/Tools/simulation/gz/worlds" %>
+<% PX4_GZ_MODELS= @settings["PX4_DIR"] + "/Tools/simulation/gz/models" %>
+<% PX4_DIR= @settings["PX4_DIR"] %>
+<% GZ_WORLD= @settings["GZ_WORLD"] %>
+<% headless_tag = (@settings["HEADLESS"].to_s.downcase == "true") ? "-s" : "" %>
+
+windows:
+  - px4:
+      layout: tiled
+      panes:
+          <% for i in 0..MODEL_LIST.count-1 %>
+            <% PX4_SIM_MODEL = MODEL_LIST[i] %>
+            <% PX4_GZ_MODEL_POSE = MODEL_POSITIONS[i] %>
+          - ./wait_for_gz_sim.sh && cd <%= PX4_DIR %>/build/px4_sitl_default && PX4_SIM_MODEL=<%= PX4_SIM_MODEL %> PX4_GZ_MODEL_POSE=<%= PX4_GZ_MODEL_POSE %> PX4_UXRCE_DDS_NS=Drone<%= i %> ./bin/px4 -i <%= i %>
+          <% end %>
+  - ignition_gazebo: export GZ_SIM_RESOURCE_PATH=<%= PX4_GZ_MODELS + ":" + PX4_GZ_WORLDS %> && gz sim --verbose=1 <%= PX4_GZ_WORLDS + "/" + GZ_WORLD+".sdf" %> -r <%= headless_tag %>
+  - microXRCEAgent: MicroXRCEAgent udp4 -p 8888

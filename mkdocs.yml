@@ -1,0 +1,8 @@
+site_name: PX4_ROS2_workspace Documentation
+theme:
+  name: readthedocs
+nav:
+  - Home: index.md
+  - Simulation: simulation.md
+  - Firmware: firmware.md
+  - Repository Structure: structure.md

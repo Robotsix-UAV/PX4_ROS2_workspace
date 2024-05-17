@@ -1,0 +1,24 @@
+name: Test On Self-Hosted Pixhawk
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+
+jobs:
+  test:
+    name: Test On Self-Hosted Pixhawk
+    runs-on: [self-hosted, pixhawk]
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Test firmware_upload.sh
+        run: ${{ github.workspace }}/tests/test_firmware_upload.sh
+
+      - name: Test parameters_upload.sh
+        run: ${{ github.workspace }}/tests/test_parameters_upload.sh ${{ github.workspace }}/tests/test_params.txt

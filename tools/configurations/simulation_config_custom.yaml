@@ -1,0 +1,6 @@
+world: my_windy_world
+models:
+  - name: my_custom_quad
+    pose: [0, 0, 0, 0, 0, 0]
+  - name: my_custom_quad
+    pose: [2, 0, 0, 0, 0, 0]

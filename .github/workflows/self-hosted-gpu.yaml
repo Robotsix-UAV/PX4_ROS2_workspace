@@ -1,0 +1,24 @@
+name: Test On Self-Hosted GPU
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+
+jobs:
+  test:
+    name: Test On Self-Hosted GPU
+    runs-on: [self-hosted, gpu]
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Check access to display
+        run: python3 ${{ github.workspace }}/tests/check_display.py
+
+      - name: Test launch_simulation.sh
+        run: ${{ github.workspace }}/tests/test_launch_simulation.sh

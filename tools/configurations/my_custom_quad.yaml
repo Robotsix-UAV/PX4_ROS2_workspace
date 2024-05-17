@@ -1,0 +1,10 @@
+model_name: "my_custom_quad"
+arm_length: 0.5 # in meters
+num_motors: 4 # Should be at least 2 and even
+angle_offset: 45 # in degrees
+weight: 1.0 # in kg
+Ixx: 0.03 # in kg*m^2
+Iyy: 0.03 # in kg*m^2
+Izz: 0.03 # in kg*m^2
+max_motor_thrust: 10.0 # in N
+first_motor_cw: true # Optional, defaults to True
