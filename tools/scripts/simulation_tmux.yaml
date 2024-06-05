@@ -16,7 +16,7 @@ windows:
           <% for i in 0..MODEL_LIST.count-1 %>
             <% PX4_SIM_MODEL = MODEL_LIST[i] %>
             <% PX4_GZ_MODEL_POSE = MODEL_POSITIONS[i] %>
-          - ./wait_for_gz_sim.sh && cd <%= PX4_DIR %>/build/px4_sitl_default && PX4_SIM_MODEL=<%= PX4_SIM_MODEL %> PX4_GZ_MODEL_POSE=<%= PX4_GZ_MODEL_POSE %> PX4_UXRCE_DDS_NS=Drone<%= i %> ./bin/px4 -i <%= i %>
+          - ./wait_for_gz_sim.sh && cd <%= PX4_DIR %>/build/px4_sitl_default && PX4_SIM_MODEL=<%= PX4_SIM_MODEL %> PX4_GZ_MODEL_POSE=<%= PX4_GZ_MODEL_POSE %> PX4_UXRCE_DDS_NS=uav<%= i %> ./bin/px4 -i <%= i %>
           <% end %>
   - ignition_gazebo: export GZ_SIM_RESOURCE_PATH=<%= PX4_GZ_MODELS + ":" + PX4_GZ_WORLDS %> && gz sim --verbose=1 <%= PX4_GZ_WORLDS + "/" + GZ_WORLD+".sdf" %> -r <%= headless_tag %>
   - microXRCEAgent: MicroXRCEAgent udp4 -p 8888
