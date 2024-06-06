@@ -24,6 +24,8 @@ jobs:
             dockerfile: Dockerfile_generate_airframe
           - image: gz_sim
             dockerfile: Dockerfile_gz_sim
+          - image: ros2_builder
+            dockerfile: Dockerfile_ros2_builder
     permissions:
       packages: write
       contents: read

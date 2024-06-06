@@ -1,0 +1,10 @@
+FROM ros:humble-ros-base
+
+# Creating a non-root user with sudo privileges and custom bashrc
+RUN useradd -m -s /bin/bash -G sudo ros
+RUN echo 'ros:ros' | chpasswd
+RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.bashrc
+
+USER ros
+
+WORKDIR /ros_workspace/src
