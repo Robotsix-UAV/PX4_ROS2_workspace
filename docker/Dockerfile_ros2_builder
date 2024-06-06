@@ -1,10 +1,19 @@
 FROM ros:humble-ros-base
 
+# Install pip
+RUN apt-get update && apt-get install -y python3-pip && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Creating a non-root user with sudo privileges and custom bashrc
 RUN useradd -m -s /bin/bash -G sudo ros
 RUN echo 'ros:ros' | chpasswd
 RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.bashrc
 
 USER ros
+
+# Installing rosdoc2
+WORKDIR /home/ros
+RUN git clone --recursive https://github.com/ros-infrastructure/rosdoc2.git
+WORKDIR /home/ros/rosdoc2
+RUN pip install --user --upgrade .
 
 WORKDIR /ros_workspace/src
