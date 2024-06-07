@@ -9,8 +9,12 @@ RUN apt update && apt install -y \
 # Creating a non-root user with sudo privileges and custom bashrc
 RUN useradd -m -s /bin/bash -G sudo ros
 RUN echo 'ros:ros' | chpasswd
-RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.bashrc && \
-    echo "source /ros_workspace/install/setup.bash" >>/home/ros/.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.profile && \
+    echo "if [ -f /ros_workspace/install/setup.bash ]; then" >>/home/ros/.profile && \
+    echo "    source /ros_workspace/install/setup.bash" >>/home/ros/.profile && \
+    echo "fi" >>/home/ros/.profile && \
+    echo "export PATH=/home/ros/.local/bin:\$PATH" >>/home/ros/.profile && \
+    echo "export PYTHONPATH=/home/ros/.local/lib/python3.10/site-packages:\$PYTHONPATH" >>/home/ros/.profile
 
 USER ros
 
@@ -18,6 +22,6 @@ USER ros
 WORKDIR /home/ros
 RUN git clone --recursive https://github.com/ros-infrastructure/rosdoc2.git
 WORKDIR /home/ros/rosdoc2
-RUN pip install --user --upgrade .
+RUN pip install --upgrade .
 
 WORKDIR /ros_workspace/src
