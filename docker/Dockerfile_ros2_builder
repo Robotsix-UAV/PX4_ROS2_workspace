@@ -4,6 +4,7 @@ FROM ros:humble-ros-base
 RUN apt update && apt install -y \
     python3-pip \
     doxygen \
+    lcov \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Creating a non-root user with sudo privileges and custom bashrc
@@ -23,5 +24,8 @@ WORKDIR /home/ros
 RUN git clone --recursive https://github.com/ros-infrastructure/rosdoc2.git
 WORKDIR /home/ros/rosdoc2
 RUN pip install --upgrade .
+
+# Installing colcon-lcov-result
+RUN pip install colcon-lcov-result
 
 WORKDIR /ros_workspace/src

@@ -26,6 +26,8 @@ jobs:
             dockerfile: Dockerfile_gz_sim
           - image: ros2_builder
             dockerfile: Dockerfile_ros2_builder
+          - image: ros2_debug
+            dockerfile: Dockerfile_ros2_debug
     permissions:
       packages: write
       contents: read
