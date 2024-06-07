@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y python3-pip && apt-get clean && rm -rf 
 # Creating a non-root user with sudo privileges and custom bashrc
 RUN useradd -m -s /bin/bash -G sudo ros
 RUN echo 'ros:ros' | chpasswd
-RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.bashrc && \
+    echo "source /ros_workspace/install/setup.bash" >>/home/ros/.bashrc
 
 USER ros
 
