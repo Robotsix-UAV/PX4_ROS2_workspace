@@ -191,14 +191,14 @@ done
 # ------------------------------------------------------------------------------
 # Docker command to build SITL firmware
 # ------------------------------------------------------------------------------
-DOCKER_REPO=robotsix/px4_sitl_builder:master
+DOCKER_REPO=robotsix/px4_sitl_builder:main
 docker pull $DOCKER_REPO
 docker run --rm -w "$SCRIPT_DIR" -v $SCRIPT_DIR/../../PX4-Autopilot:$SCRIPT_DIR/../../PX4-Autopilot:rw -v $SCRIPT_DIR/../scripts:$SCRIPT_DIR:ro $DOCKER_REPO bash -c "./sitl_build.sh"
 
 # ------------------------------------------------------------------------------
 # Docker command to run the simulation
 # ------------------------------------------------------------------------------
-DOCKER_REPO=robotsix/gz_sim:master
+DOCKER_REPO=robotsix/gz_sim:main
 docker pull $DOCKER_REPO
 if [ "$(docker ps -q -f name=px4_sitl)" ]; then
     docker stop px4_sitl

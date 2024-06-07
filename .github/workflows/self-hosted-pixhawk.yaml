@@ -3,7 +3,7 @@ name: Test On Self-Hosted Pixhawk
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - "docs/**"
       - "README.md"

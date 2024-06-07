@@ -89,7 +89,7 @@ fi
 PARAM_DIR=$(readlink -f $(dirname "$param_file"))
 PARAM_FILE=$(basename "$param_file")
 SCRIPT_DIR=$(readlink -f $(dirname "$0"))
-DOCKER_REPO=robotsix/pymavlink:master
+DOCKER_REPO=robotsix/pymavlink:main
 
 # ------------------------------------------------------------------------------
 # Pull the Docker image and run the command to upload parameters

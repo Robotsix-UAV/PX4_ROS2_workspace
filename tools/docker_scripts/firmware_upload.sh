@@ -144,6 +144,6 @@ fi
 # ------------------------------------------------------------------------------
 # Pull the Docker image and flash the firmware using Docker
 # ------------------------------------------------------------------------------
-DOCKER_REPO=robotsix/px4_fw_upload:master
+DOCKER_REPO=robotsix/px4_fw_upload:main
 docker pull $DOCKER_REPO
 docker run --rm -w "$SCRIPT_DIR" -v $SCRIPT_DIR/../../PX4-Autopilot:$SCRIPT_DIR/../../PX4-Autopilot:rw -v $SCRIPT_DIR/../scripts:$SCRIPT_DIR:ro --privileged -v /dev:/dev:rw $DOCKER_REPO bash -c "./firmware_upload.sh $platform"

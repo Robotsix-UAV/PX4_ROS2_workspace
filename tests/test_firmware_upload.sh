@@ -39,7 +39,7 @@ check_result() {
 # ------------------------------------------------------------------------------
 cleanup() {
     echo "Cleaning up"
-    DOCKER_REPO=robotsix/px4_fw_upload:master
+    DOCKER_REPO=robotsix/px4_fw_upload:main
     docker run --rm -w "$SCRIPT_DIR" -v $SCRIPT_DIR/..:$SCRIPT_DIR/..:rw $DOCKER_REPO bash -c "rm -rf ../PX4-Autopilot"
 }
 

@@ -100,7 +100,7 @@ check_dir_exists "$TARGET_DIR/meshes" "meshes directory"
 # Clean up the generated model files using the Docker container
 # ------------------------------------------------------------------------------
 rm -f $CONFIG_FILE
-DOCKER_REPO=robotsix/generate_airframe:master
+DOCKER_REPO=robotsix/generate_airframe:main
 docker run --rm -w "$SCRIPT_DIR" -v $SCRIPT_DIR/..:$SCRIPT_DIR/..:rw $DOCKER_REPO sh -c "rm -rf ../gz_sim/custom_airframes/test_model"
 check_result $? "Cleaning up the generated model files with Docker container"
 

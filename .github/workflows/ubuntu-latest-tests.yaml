@@ -3,7 +3,7 @@ name: Test On Ubuntu Latest
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - "docs/**"
       - "README.md"

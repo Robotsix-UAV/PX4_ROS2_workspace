@@ -105,7 +105,7 @@ SCRIPT_DIR=$(readlink -f $(dirname "$0"))
 # ------------------------------------------------------------------------------
 # Docker repository
 # ------------------------------------------------------------------------------
-DOCKER_REPO=robotsix/generate_airframe:master
+DOCKER_REPO=robotsix/generate_airframe:main
 
 # ------------------------------------------------------------------------------
 # Pull the Docker image and run the command to generate the airframe
