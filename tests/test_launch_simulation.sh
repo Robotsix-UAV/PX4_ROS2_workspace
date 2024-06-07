@@ -1,6 +1,12 @@
 #!/bin/bash
 
 # ==============================================================================
+# Copyright 2024 Damien Six (six.damien@robotsix.net)
+#
+# SPDX-License-Identifier: Apache-2.0
+# ==============================================================================
+
+# ==============================================================================
 # Test Script for launch_simulation.sh
 #
 # This script is designed to test the functionality of the launch_simulation.sh
