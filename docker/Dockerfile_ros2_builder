@@ -1,7 +1,10 @@
 FROM ros:humble-ros-base
 
-# Install pip
-RUN apt-get update && apt-get install -y python3-pip && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install dependencies
+RUN apt update && apt install -y \
+    python3-pip \
+    doxygen \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Creating a non-root user with sudo privileges and custom bashrc
 RUN useradd -m -s /bin/bash -G sudo ros
