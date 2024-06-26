@@ -18,7 +18,7 @@ The generated airframe model will be saved in the `gz_sim/custom_airframes` dire
 
 ##### Usage
 ```sh
-./generate_airframe.sh -f <path_to_yaml_file>
+/tools/docker_scripts/generate_airframe.sh -f <path_to_yaml_file>
 ```
 
 ##### YAML Configuration Structure
@@ -47,7 +47,7 @@ The `launch_simulation.sh` script automates the launch of a simulation for PX4 A
 
 ##### Usage
 ```sh
-./launch_simulation.sh -f <path_to_yaml_file>
+/tools/docker_scripts/launch_simulation.sh -f <path_to_yaml_file>
 ```
 
 ##### YAML Configuration Structure

@@ -11,7 +11,7 @@ The `firmware_upload.sh` script automates the process of setting up the PX4-Auto
 ##### Usage
 Your device must be connected to your computer via USB. The script will automatically detect the device and flash the firmware.
 ```sh
-./firmware_upload.sh
+/tools/docker_scripts/firmware_upload.sh
 ```
 
 ##### Options
@@ -23,8 +23,8 @@ Your device must be connected to your computer via USB. The script will automati
 
 ##### Examples
 ```sh
-./firmware_upload.sh -b main -p px4_fmu-v6x -a
-./firmware_upload.sh -t latest -p px4_fmu-v6x -a
+/tools/docker_scripts/firmware_upload.sh -b main -p px4_fmu-v6x -a
+/tools/docker_scripts/firmware_upload.sh -t latest -p px4_fmu-v6x -a
 ```
 
 #### Parameters Upload
@@ -34,7 +34,7 @@ The `parameters_upload.sh` script uploads parameters to a PX4 device using Docke
 ##### Usage
 Your device must be connected to your computer via USB. The script will automatically detect the device and upload the parameters.
 ```sh
-./parameters_upload.sh -f <path_to_parameter_file>
+/tools/docker_scripts/parameters_upload.sh -f <path_to_parameter_file>
 ```
 
 ##### Parameter File Structure
