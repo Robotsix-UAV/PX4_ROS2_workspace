@@ -163,12 +163,15 @@ while IFS= read -r line; do
                         rm -rf "$PX4_DIR/Tools/simulation/gz/models/$(basename $dir)"
                     fi
                     cp -rf "$dir" "$PX4_DIR/Tools/simulation/gz/models/$(basename $dir)"
+                    config_name="666${index}_$(basename $dir)"
                     if ! grep -q "$(basename $dir)" "$FILE"; then
-                        config_name="666${index}_$(basename $dir)"
                         echo "$config_name" >>$TEMP_FILE
-                        cp -rf "$dir/$(basename $dir)" "$PX4_DIR/ROMFS/px4fmu_common/init.d-posix/airframes/$config_name"
-                        index=$((index + 1))
+                    else
+                        # Replace the existing line with the new configuration number
+                        sed -i "s/[0-9]+_$(basename $dir)/$config_name/g" $TEMP_FILE
                     fi
+                    cp -r "$dir/$(basename $dir)" "$PX4_DIR/ROMFS/px4fmu_common/init.d-posix/airframes/$config_name"
+                    index=$((index + 1))
                 fi
             fi
         done

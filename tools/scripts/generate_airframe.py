@@ -97,6 +97,7 @@ def generate_model_files(arm_length: float, num_motors: int, angle_offset: float
     model_config_content = model_config_template.render(model_name=model_name)
     model_sdf_content = model_sdf_template.render(
         model_name=model_name,
+        num_motors=num_motors,
         arm_length=arm_length,
         motor_positions=motor_positions,
         arm_angles=angles[:num_motors // 2],

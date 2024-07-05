@@ -5,7 +5,7 @@
     <static>false</static>
     <link name="base_link">
       <inertial>
-        <mass>1.0</mass>
+        <mass>0.96</mass>
         <inertia>
           <ixx>0.03</ixx>
           <ixy>0</ixy>
@@ -129,7 +129,6 @@
     <link name="arm_0">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>0 0 0 0 0 0.7853981633974483</pose>
       <inertial>
         <mass>1e-9</mass>
@@ -172,10 +171,13 @@
         </surface>
       </collision>
     </link>
+    <joint name='arm_0_joint' type='fixed'>
+      <child>arm_0</child>
+      <parent>base_link</parent>
+    </joint>
     <link name="arm_1">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>0 0 0 0 0 2.356194490192345</pose>
       <inertial>
         <mass>1e-9</mass>
@@ -218,17 +220,20 @@
         </surface>
       </collision>
     </link>
+    <joint name='arm_1_joint' type='fixed'>
+      <child>arm_1</child>
+      <parent>base_link</parent>
+    </joint>
     <link name="rotor_0">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>0.3535533905932738 0.35355339059327373 0.01 0 0 0</pose>
       <inertial>
-        <mass>1e-9</mass>
+        <mass>0.01</mass>
         <inertia>
-          <ixx>1e-9</ixx>
-          <iyy>1e-9</iyy>
-          <izz>1e-9</izz>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
         </inertia>
       </inertial>
       <visual name='rotor_0_visual'>
@@ -286,8 +291,8 @@
       <timeConstantUp>0.0</timeConstantUp>
       <timeConstantDown>0.0</timeConstantDown>
       <maxRotVelocity>1000.0</maxRotVelocity>
-      <motorConstant>10.0e-6</motorConstant>
-      <momentConstant>0.05</momentConstant>
+      <motorConstant>30.0e-6</motorConstant>
+      <momentConstant>0.02</momentConstant>
       <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>0</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>
@@ -298,14 +303,13 @@
     <link name="rotor_1">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>-0.35355339059327373 0.3535533905932738 0.01 0 0 0</pose>
       <inertial>
-        <mass>1e-9</mass>
+        <mass>0.01</mass>
         <inertia>
-          <ixx>1e-9</ixx>
-          <iyy>1e-9</iyy>
-          <izz>1e-9</izz>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
         </inertia>
       </inertial>
       <visual name='rotor_1_visual'>
@@ -363,8 +367,8 @@
       <timeConstantUp>0.0</timeConstantUp>
       <timeConstantDown>0.0</timeConstantDown>
       <maxRotVelocity>1000.0</maxRotVelocity>
-      <motorConstant>10.0e-6</motorConstant>
-      <momentConstant>0.05</momentConstant>
+      <motorConstant>30.0e-6</motorConstant>
+      <momentConstant>0.02</momentConstant>
       <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>1</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>
@@ -375,14 +379,13 @@
     <link name="rotor_2">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>-0.35355339059327384 -0.35355339059327373 0.01 0 0 0</pose>
       <inertial>
-        <mass>1e-9</mass>
+        <mass>0.01</mass>
         <inertia>
-          <ixx>1e-9</ixx>
-          <iyy>1e-9</iyy>
-          <izz>1e-9</izz>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
         </inertia>
       </inertial>
       <visual name='rotor_2_visual'>
@@ -440,8 +443,8 @@
       <timeConstantUp>0.0</timeConstantUp>
       <timeConstantDown>0.0</timeConstantDown>
       <maxRotVelocity>1000.0</maxRotVelocity>
-      <motorConstant>10.0e-6</motorConstant>
-      <momentConstant>0.05</momentConstant>
+      <motorConstant>30.0e-6</motorConstant>
+      <momentConstant>0.02</momentConstant>
       <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>2</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>
@@ -452,14 +455,13 @@
     <link name="rotor_3">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>0.3535533905932737 -0.35355339059327384 0.01 0 0 0</pose>
       <inertial>
-        <mass>1e-9</mass>
+        <mass>0.01</mass>
         <inertia>
-          <ixx>1e-9</ixx>
-          <iyy>1e-9</iyy>
-          <izz>1e-9</izz>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
         </inertia>
       </inertial>
       <visual name='rotor_3_visual'>
@@ -517,8 +519,8 @@
       <timeConstantUp>0.0</timeConstantUp>
       <timeConstantDown>0.0</timeConstantDown>
       <maxRotVelocity>1000.0</maxRotVelocity>
-      <motorConstant>10.0e-6</motorConstant>
-      <momentConstant>0.05</momentConstant>
+      <motorConstant>30.0e-6</motorConstant>
+      <momentConstant>0.02</momentConstant>
       <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>3</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>

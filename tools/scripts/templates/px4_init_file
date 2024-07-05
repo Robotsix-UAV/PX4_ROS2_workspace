@@ -7,7 +7,7 @@
 
 PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
 PX4_GZ_WORLD=${PX4_GZ_WORLD:=default}
-PX4_SIM_MODEL=${PX4_SIM_MODEL:=qxs}
+PX4_SIM_MODEL=${PX4_SIM_MODEL:= {{ model_name }}}
 
 . ${R}etc/init.d/rc.mc_defaults
 
@@ -22,10 +22,10 @@ param set-default CA_ROTOR_COUNT {{ num_motors }}
 
 {% for (px, py, pz) in motor_positions %}
 param set-default CA_ROTOR{{ loop.index0 }}_PX {{ px }}
-param set-default CA_ROTOR{{ loop.index0 }}_PY {{ py }}
-param set-default CA_ROTOR{{ loop.index0 }}_PZ {{ pz }}
+param set-default CA_ROTOR{{ loop.index0 }}_PY {{ -py }}
+param set-default CA_ROTOR{{ loop.index0 }}_PZ {{ -pz }}
 param set-default CA_ROTOR{{ loop.index0 }}_CT {{ max_motor_thrust }}
-{% set km = 0.05 if (loop.index0 % 2 == 0 and first_motor_cw) or (loop.index0 % 2 != 0 and not first_motor_cw) else -0.05 %}
+{% set km = -0.02 if (loop.index0 % 2 == 0 and first_motor_cw) or (loop.index0 % 2 != 0 and not first_motor_cw) else 0.02 %}
 param set-default CA_ROTOR{{ loop.index0 }}_KM {{ km }}
 
 param set-default SIM_GZ_EC_FUNC{{ loop.index0 + 1 }} {{ 101 + loop.index0 }}

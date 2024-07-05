@@ -1,4 +1,4 @@
-world: my_windy_world
+world: default
 models:
   - name: my_custom_quad
     pose: [0, 0, 0, 0, 0, 0]

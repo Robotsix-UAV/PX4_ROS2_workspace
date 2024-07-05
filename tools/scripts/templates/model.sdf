@@ -5,7 +5,7 @@
     <static>false</static>
     <link name="base_link">
       <inertial>
-        <mass>{{ weight }}</mass>
+        <mass>{{ weight - num_motors * 0.01 }}</mass>
         <inertia>
           <ixx>{{ Ixx }}</ixx>
           <ixy>0</ixy>
@@ -130,7 +130,6 @@
     <link name="arm_{{ loop.index0 }}">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>0 0 0 0 0 {{ angle }}</pose>
       <inertial>
         <mass>1e-9</mass>
@@ -173,19 +172,22 @@
         </surface>
       </collision>
     </link>
+    <joint name='arm_{{ loop.index0 }}_joint' type='fixed'>
+      <child>arm_{{ loop.index0 }}</child>
+      <parent>base_link</parent>
+    </joint>
     {% endfor %}
     {% for pos in motor_positions %}
     <link name="rotor_{{ loop.index0 }}">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
-      <velocity_decay />
       <pose>{{ pos[0] }} {{ pos[1] }} {{ pos[2] + arm_length/50 }} 0 0 0</pose>
       <inertial>
-        <mass>1e-9</mass>
+        <mass>0.01</mass>
         <inertia>
-          <ixx>1e-9</ixx>
-          <iyy>1e-9</iyy>
-          <izz>1e-9</izz>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
         </inertia>
       </inertial>
       <visual name='rotor_{{ loop.index0 }}_visual'>
@@ -260,7 +262,7 @@
       <timeConstantDown>0.0</timeConstantDown>
       <maxRotVelocity>1000.0</maxRotVelocity>
       <motorConstant>{{ max_motor_thrust }}e-6</motorConstant>
-      <momentConstant>0.05</momentConstant>
+      <momentConstant>0.02</momentConstant>
       <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>{{ loop.index0 }}</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>
