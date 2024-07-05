@@ -267,6 +267,7 @@
       <motorNumber>{{ loop.index0 }}</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>
       <rollingMomentCoefficient>0.0</rollingMomentCoefficient>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
       <motorType>velocity</motorType>
     </plugin>
     {% endfor %}
