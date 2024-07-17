@@ -28,6 +28,16 @@ cd ../../PX4-Autopilot
 git config --global --add safe.directory '*'
 
 # ------------------------------------------------------------------------------
+# Fix the DDS configuration file
+# Uncomment the lines
+#  # - topic: /fmu/out/vehicle_angular_velocity
+#  #   type: px4_msgs::msg::VehicleAngularVelocity
+# TODO: Remove those lines when the issue is fixed
+# ------------------------------------------------------------------------------
+sed -i 's/# - topic: \/fmu\/out\/vehicle_angular_velocity/- topic: \/fmu\/out\/vehicle_angular_velocity/' ./src/modules/uxrce_dds_client/dds_topics.yaml
+sed -i 's/#   type: px4_msgs::msg::VehicleAngularVelocity/  type: px4_msgs::msg::VehicleAngularVelocity/' ./src/modules/uxrce_dds_client/dds_topics.yaml
+
+# ------------------------------------------------------------------------------
 # Run the make command to build the PX4 SITL
 # ------------------------------------------------------------------------------
 make px4_sitl

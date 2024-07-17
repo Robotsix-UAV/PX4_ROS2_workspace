@@ -34,7 +34,7 @@ Izz: 0.03 # in kg*m^2
 max_motor_thrust: 10.0 # in N
 first_motor_cw: true  # Optional, defaults to True
 ```
-`angle_offset` is the angle between the first motor and the x-axis to use when no motor is aligned with the x-axis of the UAV.  
+`angle_offset` is the angle between the first motor and the x-axis to use when no motor is aligned with the x-axis of the UAV.
 `first_motor_cw` specifies if the first motor rotates clockwise. If not specified, it defaults to `True`. The motors will be alternatively clockwise and counterclockwise.
 
 ##### Options

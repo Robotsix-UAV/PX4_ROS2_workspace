@@ -8,4 +8,4 @@ This documentation will guide you through the installation, configuration, and u
 
 ## Dependencies
 
-This workspace requires only `git` and `docker` to be installed on your system. Docker containers provide all the necessary dependencies and tools to work with PX4 and ROS 2. Additionally, for SITL simulation using an NVIDIA GPU, you will need to have `nvidia-container-runtime` installed. Other GPUs are not supported.
+This workspace requires only `git` and `docker` to be installed on your system. Docker containers provide all the necessary dependencies and tools to work with PX4 and ROS 2. Additionally, for SITL simulation using an NVIDIA GPU, you will need to have `nvidia-container-runtime` installed (available as a package under Ubuntu). Other GPUs are not supported.
