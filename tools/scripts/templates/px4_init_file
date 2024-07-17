@@ -25,7 +25,7 @@ param set-default CA_ROTOR{{ loop.index0 }}_PX {{ px }}
 param set-default CA_ROTOR{{ loop.index0 }}_PY {{ -py }}
 param set-default CA_ROTOR{{ loop.index0 }}_PZ {{ -pz }}
 param set-default CA_ROTOR{{ loop.index0 }}_CT {{ max_motor_thrust }}
-{% set km = -0.02 if (loop.index0 % 2 == 0 and first_motor_cw) or (loop.index0 % 2 != 0 and not first_motor_cw) else 0.02 %}
+{% set km = -0.06 if (loop.index0 % 2 == 0 and first_motor_cw) or (loop.index0 % 2 != 0 and not first_motor_cw) else 0.06 %}
 param set-default CA_ROTOR{{ loop.index0 }}_KM {{ km }}
 
 param set-default SIM_GZ_EC_FUNC{{ loop.index0 + 1 }} {{ 101 + loop.index0 }}

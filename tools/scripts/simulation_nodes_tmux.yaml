@@ -1,0 +1,18 @@
+name: ros2_uav_nodes
+project_root: .
+
+<% MODEL_LIST = @settings["MODEL_LIST"].split(":") %>
+
+windows:
+  - parameter_servers:
+      layout: tiled
+      panes:
+        <% for i in 0..MODEL_LIST.count-1 %>
+        - ros2 launch ros2_uav_parameters parameter_server_launch.py namespace:=uav<%= i %>
+        <% end %>
+  <% for i in 0..MODEL_LIST.count-1 %>
+  - uav<%= i %>_modes:
+      layout: tiled
+      panes:
+        - ros2 run ros2_uav_px4 modes_runner --ros2-args -r __ns:=/uav<%= i %>
+  <% end %>
