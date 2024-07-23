@@ -210,6 +210,7 @@ fi
 # ------------------------------------------------------------------------------
 # Run the container with the NVIDIA runtime
 # ------------------------------------------------------------------------------
+# TODO: Embed the script in the container
 CONFIG_DIR=$(readlink -f $(dirname "$config_file"))
 CONFIG_FILE=$(basename "$config_file")
 xhost + && docker run -it -d --rm --name px4_sitl --runtime=nvidia \

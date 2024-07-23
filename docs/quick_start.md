@@ -73,3 +73,6 @@ cd tools/docker_scripts
 ```
 
 Here, `uav0` is the drone's namespace, `0 0 2` represents the x, y, z coordinates, and `0` is the heading.
+
+<!-- TODO: Use docker-compose to simplify the process -->
+<!-- TODO: See if we can take advantage of docker compose DNS to avoid getting the container IP -->

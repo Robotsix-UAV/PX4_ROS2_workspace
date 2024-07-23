@@ -6,3 +6,4 @@ gz_sim/*
 !gz_sim/custom_worlds/my_windy_world/*
 !gz_sim/custom_worlds/README.md
 site/
+.devcontainer/
