@@ -19,6 +19,21 @@ RUN echo "source /opt/ros/humble/setup.bash" >>/home/ros/.profile && \
 
 USER ros
 
+# Installing acados
+WORKDIR /home/ros/lib
+RUN git clone https://github.com/acados/acados.git \
+    && cd acados \
+    && git checkout v0.3.0 \
+    && git submodule update --recursive --init \
+    && mkdir -p build \
+    && cd build \
+    && cmake -DACADOS_WITH_QPOASES=ON -DACADOS_WITH_OSQP=OFF -DACADOS_SILENT=ON .. \
+    && make install -j4 \
+    && echo "export ACADOS_SOURCE_DIR=/lib/acados" >> /home/ros/.zshrc \
+    && echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/home/ros/lib/acados/lib" >> /home/ros/.zshrc \
+    && echo "export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/home/ros/lib/acados" >> /home/ros/.zshrc \
+    && pip install -e /home/ros/lib/acados/interfaces/acados_template
+
 # Installing rosdoc2
 WORKDIR /home/ros
 RUN git clone --recursive https://github.com/ros-infrastructure/rosdoc2.git
