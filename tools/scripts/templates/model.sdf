@@ -262,7 +262,7 @@
       <timeConstantDown>0.0</timeConstantDown>
       <maxRotVelocity>1000.0</maxRotVelocity>
       <motorConstant>{{ max_motor_thrust }}e-6</motorConstant>
-      <momentConstant>0.06</momentConstant>
+      <momentConstant>0.01</momentConstant>
       <commandSubTopic>command/motor_speed</commandSubTopic>
       <motorNumber>{{ loop.index0 }}</motorNumber>
       <rotorDragCoefficient>0.0</rotorDragCoefficient>
