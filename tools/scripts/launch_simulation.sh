@@ -37,6 +37,27 @@ PX4_DIR="$SCRIPT_DIR/../../PX4-Autopilot"
 AIRFRAMES_DIR="$PX4_DIR/ROMFS/px4fmu_common/init.d-posix/airframes"
 
 # ------------------------------------------------------------------------------
+# Build gz plugins, if any. Exit if the build fails.
+# ------------------------------------------------------------------------------
+PLUGINS_DIR=/gz_plugins
+if [ -d "$PLUGINS_DIR" ]; then
+    for dir in $PLUGINS_DIR/*; do
+        if [ -d "$dir" ]; then
+            if [ -f "$dir/CMakeLists.txt" ]; then
+                PLUGIN_NAME=$(basename $dir)
+                PLUGIN_BUILD_DIR="$dir/build"
+                mkdir -p $PLUGIN_BUILD_DIR
+                cd $PLUGIN_BUILD_DIR
+                cmake ..
+                make -j4 || exit 1
+                make install || exit 1
+            fi
+        fi
+    done
+fi
+cd $SCRIPT_DIR
+
+# ------------------------------------------------------------------------------
 # Read the configuration file and extract required parameters
 # ------------------------------------------------------------------------------
 FILE_PATH=$1

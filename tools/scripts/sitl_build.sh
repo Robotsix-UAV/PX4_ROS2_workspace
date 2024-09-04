@@ -32,10 +32,25 @@ git config --global --add safe.directory '*'
 # Uncomment the lines
 #  # - topic: /fmu/out/vehicle_angular_velocity
 #  #   type: px4_msgs::msg::VehicleAngularVelocity
-# TODO: Remove those lines when the issue is fixed
+# Also add the lines after the line "publications:" if not found
+#  - topic: /fmu/out/actuator_motors
+#    type: px4_msgs::msg::ActuatorMotors
+#  - topic: /fmu/out/vehicle_acceleration
+#    type: px4_msgs::msg::VehicleAcceleration
+#  - topic: /fmu/out/actuator_outputs
+#    type: px4_msgs::msg::ActuatorOutputs
 # ------------------------------------------------------------------------------
 sed -i 's/# - topic: \/fmu\/out\/vehicle_angular_velocity/- topic: \/fmu\/out\/vehicle_angular_velocity/' ./src/modules/uxrce_dds_client/dds_topics.yaml
 sed -i 's/#   type: px4_msgs::msg::VehicleAngularVelocity/  type: px4_msgs::msg::VehicleAngularVelocity/' ./src/modules/uxrce_dds_client/dds_topics.yaml
+if ! grep -q "/fmu/out/actuator_motors" ./src/modules/uxrce_dds_client/dds_topics.yaml; then
+    sed -i '/publications:/a \  - topic: \/fmu\/out\/actuator_motors\n    type: px4_msgs::msg::ActuatorMotors' ./src/modules/uxrce_dds_client/dds_topics.yaml
+fi
+if ! grep -q "/fmu/out/vehicle_acceleration" ./src/modules/uxrce_dds_client/dds_topics.yaml; then
+    sed -i '/publications:/a \  - topic: \/fmu\/out\/vehicle_acceleration\n    type: px4_msgs::msg::VehicleAcceleration' ./src/modules/uxrce_dds_client/dds_topics.yaml
+fi
+if ! grep -q "/fmu/out/actuator_outputs" ./src/modules/uxrce_dds_client/dds_topics.yaml; then
+    sed -i '/publications:/a \  - topic: \/fmu\/out\/actuator_outputs\n    type: px4_msgs::msg::ActuatorOutputs' ./src/modules/uxrce_dds_client/dds_topics.yaml
+fi
 
 # ------------------------------------------------------------------------------
 # Run the make command to build the PX4 SITL

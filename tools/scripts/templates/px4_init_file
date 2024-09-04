@@ -34,13 +34,17 @@ param set-default SIM_GZ_EC_MAX{{ loop.index0 + 1 }} 1000
 
 {% endfor %}
 
-param set-default MPC_MANTHR_MIN 0.05
-param set-default MPC_THR_MIN 0.05
-param set-default MPC_THR_HOVER {{ (weight * 9.81 / num_motors / max_motor_thrust)**(0.5) }}
+param set-default MPC_MANTHR_MIN 0.01
+param set-default MPC_THR_MIN 0.01
+param set-default MPC_THR_HOVER {{ weight * 9.81 / num_motors / max_motor_thrust }}
 
-# PID tuning (PX4 default are a bit too aggressive for default quad)
+# Use squared motor control signal
+param set-default THR_MDL_FAC 1
+
+# PID tuning
 param set-default MC_ROLLRATE_K 0.5
 param set-default MC_PITCHRATE_K 0.5
+param set-default MC_YAW_P 1.0
 
 # In simulation, with no remote
 param set-default COM_RC_IN_MODE 4

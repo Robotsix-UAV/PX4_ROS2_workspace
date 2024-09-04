@@ -213,10 +213,11 @@ fi
 # TODO: Embed the script in the container
 CONFIG_DIR=$(readlink -f $(dirname "$config_file"))
 CONFIG_FILE=$(basename "$config_file")
-xhost + && docker run -it -d --rm --name px4_sitl --runtime=nvidia \
+xhost + && docker run -d -it --rm --name px4_sitl --runtime=nvidia \
     -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev/dri:/dev/dri \
     -w "$SCRIPT_DIR" -v $SCRIPT_DIR/../../PX4-Autopilot:$SCRIPT_DIR/../../PX4-Autopilot:rw \
     -v $SCRIPT_DIR/../scripts:$SCRIPT_DIR:ro \
     -v $CONFIG_DIR:/configurations:ro \
+    -v $SCRIPT_DIR/../../gz_sim/custom_plugins:/gz_plugins:rw \
     -e DISPLAY=$DISPLAY \
     $DOCKER_REPO bash -c "./launch_simulation.sh /configurations/$CONFIG_FILE"
