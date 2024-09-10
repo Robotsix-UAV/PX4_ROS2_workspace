@@ -6,4 +6,5 @@ nav:
   - Quick Start: quick_start.md
   - Simulation: simulation.md
   - Firmware: firmware.md
+  - Holybro Pixhawk Jetson Baseboard Setup: holybro_pixhawk_jetson_baseboard_setup.md
   - Repository Structure: structure.md

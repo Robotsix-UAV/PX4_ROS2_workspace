@@ -62,7 +62,8 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-Restart=always
+Type=oneshot
+RemainAfterExit=yes
 ExecStart=/usr/bin/docker run --rm -it -d --name ros2_uav_offboard --network host -v /uav_ws/config:/ros_ws/install/ros2_uav_parameters/install/share/ros2_uav_parameters/config robotsix/ros2_uav_px4:main
 ExecStop=/usr/bin/docker stop ros2_uav_offboard
 
@@ -91,7 +92,7 @@ echo "UAV_NAME=$UAV_NAME" >> $USER_HOME/.bashrc
 for LAUNCH_FILE in $LAUCH_LIST; do
     LAUNCH_FILE_WE=$(echo $LAUNCH_FILE | cut -d'.' -f1)  # Extract the file name without extension
     # Add alias to ~/.bashrc to create a new tmux window for each launch file in the 'uav_session'
-    echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then docker exec ros2_uav_offboard tmux kill-window -t uav_session:\$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE \\\"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\\\"\"'" >> $USER_HOME/.bashrc
+    echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then docker exec ros2_uav_offboard tmux kill-window -t uav_session:$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE \\\"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\\\"\"'" >> $USER_HOME/.bashrc
 done
 
 # ------------------------------------------------------------------------------

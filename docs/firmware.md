@@ -33,6 +33,7 @@ The `parameters_upload.sh` script uploads parameters to a PX4 device using Docke
 
 ##### Usage
 Your device must be connected to your computer via USB. The script will automatically detect the device and upload the parameters.
+
 ```sh
 /tools/docker_scripts/parameters_upload.sh -f <path_to_parameter_file>
 ```
@@ -40,10 +41,12 @@ Your device must be connected to your computer via USB. The script will automati
 ##### Parameter File Structure
 The parameter file is a text file containing the parameters to upload. Each line should contain a parameter name and value separated by a space. Float parameters should be written with a decimal point as the type is inferred from the value. <br>
 For example:
+
 ```
 UXRCE_DDS_CFG 1000
 EKF2_ABIAS_INIT 0.15
 ```
+
 See the [PX4 documentation](https://docs.px4.io/main/en/advanced_config/parameter_reference.html) for a list of parameters.
 
 ##### Options
