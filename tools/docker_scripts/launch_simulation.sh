@@ -220,4 +220,5 @@ xhost + && docker run -d -it --rm --name px4_sitl --runtime=nvidia \
     -v $CONFIG_DIR:/configurations:ro \
     -v $SCRIPT_DIR/../../gz_sim/custom_plugins:/gz_plugins:rw \
     -e DISPLAY=$DISPLAY \
+    --network host \
     $DOCKER_REPO bash -c "./launch_simulation.sh /configurations/$CONFIG_FILE"
