@@ -84,11 +84,16 @@ docker pull $DOCKER_REPO
 if [ "$(docker ps -q -f name=ros2_uav_px4)" ]; then
     docker stop ros2_uav_px4
 fi
-SCRIPT_DIR=$(readlink -f $(dirname "$0"))
-CONFIG_DIR=$(readlink -f $(dirname "$config_file"))
-CONFIG_FILE=$(basename "$config_file")
-docker run -it -d --rm --name ros2_uav_px4 \
-    -w $SCRIPT_DIR \
-    -v $SCRIPT_DIR/../scripts:$SCRIPT_DIR:ro \
-    -v $CONFIG_DIR:/configurations:ro \
-    $DOCKER_REPO bash -c "./launch_simulation_nodes.sh /configurations/$CONFIG_FILE"
+docker run -it -d --rm --name ros2_uav_px4 $DOCKER_REPO
+
+# ------------------------------------------------------------------------------
+# Execute the simulation nodes
+# ------------------------------------------------------------------------------
+# Count the number of UAVs in the configuration file
+sleep 1
+UAV_COUNT=$(( $(yq '.models | length' "$config_file") - 1 ))
+for i in $(seq 0 $UAV_COUNT); do
+    UAV_NAME=uav$i
+    docker exec ros2_uav_px4 bash -c "source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $UAV_NAME"
+    docker exec ros2_uav_px4 tmux send-keys -t uav_session:$UAV_NAME "ros2 launch ros2_uav_px4 offboard.launch.py uav_namespace:=/$UAV_NAME" Enter
+done

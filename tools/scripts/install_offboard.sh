@@ -49,9 +49,10 @@ docker pull robotsix/ros2_uav_px4:main
 # ------------------------------------------------------------------------------
 # Set up configuration files by copying them from the Docker container to the local workspace
 # ------------------------------------------------------------------------------
-mkdir -p ~/uav_ws  # Create UAV workspace directory if it doesn't exist
+mkdir -p $USER_HOME/uav_ws  # Create UAV workspace directory if it doesn't exist
+mkdir -p $USER_HOME/uav_ws/log  # Create logs directory for the UAV
 docker run --rm -it -d --name ros2_uav_px4_cont robotsix/ros2_uav_px4:main  # Start the Docker container
-docker cp ros2_uav_px4_cont:/ros_ws/install/ros2_uav_parameters/share/ros2_uav_parameters/config /uav_ws
+docker cp ros2_uav_px4_cont:/ros_ws/install/ros2_uav_parameters/share/ros2_uav_parameters/config $USER_HOME/uav_ws
 
 # ------------------------------------------------------------------------------
 # Create a systemd service file for managing the ROS2 offboard Docker container
@@ -64,7 +65,7 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/docker run --rm -it -d --name ros2_uav_offboard --network host -v /uav_ws/config:/ros_ws/install/ros2_uav_parameters/install/share/ros2_uav_parameters/config robotsix/ros2_uav_px4:main
+ExecStart=/usr/bin/docker run --rm -it -d --name ros2_uav_offboard --network host -v $USER_HOME/uav_ws/config:/ros_ws/install/ros2_uav_parameters/install/share/ros2_uav_parameters/config -v $USER_HOME/uav_ws/log:/ros_ws/log robotsix/ros2_uav_px4:main
 ExecStop=/usr/bin/docker stop ros2_uav_offboard
 
 [Install]
@@ -86,14 +87,18 @@ echo "Available launch files:"
 echo "$LAUCH_LIST"
 
 # ------------------------------------------------------------------------------
-# Create command aliases in ~/.bashrc for each launch file to simplify execution
+# Create ~/.bashrc_offboard
 # ------------------------------------------------------------------------------
-echo "UAV_NAME=$UAV_NAME" >> $USER_HOME/.bashrc
+echo "UAV_NAME=$UAV_NAME" > $USER_HOME/.bashrc_offboard
 for LAUNCH_FILE in $LAUCH_LIST; do
     LAUNCH_FILE_WE=$(echo $LAUNCH_FILE | cut -d'.' -f1)  # Extract the file name without extension
     # Add alias to ~/.bashrc to create a new tmux window for each launch file in the 'uav_session'
-    echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then docker exec ros2_uav_offboard tmux kill-window -t uav_session:$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE \\\"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\\\"\"'" >> $USER_HOME/.bashrc
+    echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then docker exec ros2_uav_offboard tmux kill-window -t uav_session:$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE\" && docker exec ros2_uav_offboard tmux send-keys -t uav_session:$LAUNCH_FILE_WE \"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\" Enter'" >> $USER_HOME/.bashrc_offboard
 done
+# Source ~/.bashrc_offboard in ~/.bashrc if it's not already sourced
+if ! grep -q ".bashrc_offboard" $USER_HOME/.bashrc; then
+    echo "source $USER_HOME/.bashrc_offboard" >> $USER_HOME/.bashrc
+fi
 
 # ------------------------------------------------------------------------------
 # Download and compile microDDS agent to enable communication with PX4
