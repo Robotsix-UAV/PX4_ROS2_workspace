@@ -7,4 +7,5 @@ nav:
   - Simulation: simulation.md
   - Firmware: firmware.md
   - Holybro Pixhawk Jetson Baseboard Setup: holybro_pixhawk_jetson_baseboard_setup.md
+  - Collecting offboard logs: collect_log.md
   - Repository Structure: structure.md

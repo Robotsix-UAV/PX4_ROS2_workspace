@@ -10,5 +10,6 @@ gz_sim/custom_worlds/*
 gz_sim/custom_plugins/*
 !gz_sim/custom_plugins/gz_lift_drag_plugin/
 gz_sim/custom_plugins/gz_lift_drag_plugin/build/*
-site/
+log/*
+!log/collect_logs.sh
 .devcontainer/

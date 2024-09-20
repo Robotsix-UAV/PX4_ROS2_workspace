@@ -3,9 +3,11 @@
 The repository contains the following key directories and files:
 
 - `docker/` - Directory containing Dockerfiles for building Docker images used in the project.
+- `docs/` - Directory containing documentation files.
 - `gz_sim/` - Directory containing Gazebo custom simulation files.
     - `custom_airframes/` - Directory containing custom airframe models for the Gazebo simulator with PX4 SITL.
     - `custom_worlds/` - Directory containing custom world models for the Gazebo simulator with PX4 SITL.
+- `log/` - Directory to collect log files from the drones.
 - `tests/` - Directory containing test scripts.
 - `tools/` - Directory containing various utility scripts.
     - `configurations/` - Directory containing examples of configuration files for the scripts.
