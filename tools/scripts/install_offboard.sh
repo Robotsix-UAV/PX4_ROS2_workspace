@@ -90,10 +90,58 @@ echo "$LAUCH_LIST"
 # Create ~/.bashrc_offboard
 # ------------------------------------------------------------------------------
 echo "UAV_NAME=$UAV_NAME" > $USER_HOME/.bashrc_offboard
+
+# Define the shutdown_tmux_window function
+cat << 'EOF' >> $USER_HOME/.bashrc_offboard
+
+shutdown_tmux_window() {
+    local session="$1"
+    local window="$2"
+    local docker_container="$3"
+    local timeout=30  # seconds to wait for processes to terminate
+
+    if [ -z "$session" ] || [ -z "$window" ] || [ -z "$docker_container" ]; then
+        echo "Usage: shutdown_tmux_window <session> <window> <docker_container>"
+        return 1
+    fi
+
+    echo "Attempting to gracefully terminate processes in tmux window '$window' of session '$session'..."
+
+    # Send Ctrl-C to the specified tmux window
+    docker exec "$docker_container" tmux send-keys -t "${session}:${window}" C-c
+
+    # Wait for the specified timeout duration
+    echo "Waiting $timeout seconds for processes to terminate..."
+    sleep "$timeout"
+
+    # Get list of current commands in all panes
+    current_commands=$(docker exec "$docker_container" tmux list-panes -t "${session}:${window}" -F '#{pane_current_command}')
+
+    # Flag to determine if any active processes are running
+    active_processes=false
+
+    while read -r cmd; do
+        if [[ "$cmd" != "bash" && "$cmd" != "zsh" && "$cmd" != "sh" ]]; then
+            active_processes=true
+            echo "Active process detected in pane: $cmd"
+        fi
+    done <<< "$current_commands"
+
+    if [ "$active_processes" = false ]; then
+        echo "No active processes detected in any panes. Killing tmux window '$window'..."
+        docker exec "$docker_container" tmux kill-window -t "${session}:${window}"
+        echo "tmux window '$window' has been killed successfully."
+    else
+        echo "Some processes are still running. tmux window '$window' was not killed."
+        return 1
+    fi
+}
+EOF
+
 for LAUNCH_FILE in $LAUCH_LIST; do
     LAUNCH_FILE_WE=$(echo $LAUNCH_FILE | cut -d'.' -f1)  # Extract the file name without extension
     # Alias to gracefully stop the node
-    echo "alias stop_$LAUNCH_FILE_WE='docker exec ros2_uav_offboard tmux send-keys -t uav_session:$LAUNCH_FILE_WE C-c && sleep 2 && docker exec ros2_uav_offboard tmux kill-window -t uav_session:$LAUNCH_FILE_WE'" >> $USER_HOME/.bashrc_offboard
+    echo "alias stop_$LAUNCH_FILE_WE='shutdown_tmux_window uav_session $LAUNCH_FILE_WE ros2_uav_offboard'" >> $USER_HOME/.bashrc_offboard
 
     # Alias to launch the node
     echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then stop_$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE\" && docker exec ros2_uav_offboard tmux send-keys -t uav_session:$LAUNCH_FILE_WE \"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\" Enter'" >> $USER_HOME/.bashrc_offboard
