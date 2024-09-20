@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Firmware - PX4_ROS2_workspace Documentation</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Firmware";
+        var mkdocs_page_input_path = "firmware.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> PX4_ROS2_workspace Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../quick_start/">Quick Start</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../simulation/">Simulation</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Firmware</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#firmware-flashing">Firmware Flashing</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#parameters-upload">Parameters Upload</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#usage_1">Usage</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#parameter-file-structure">Parameter File Structure</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#options_1">Options</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../holybro_pixhawk_jetson_baseboard_setup/">Holybro Pixhawk Jetson Baseboard Setup</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../collect_log/">Collecting offboard logs</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../structure/">Repository Structure</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">PX4_ROS2_workspace Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Firmware</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h3 id="firmware-utilities-guide">Firmware Utilities Guide</h3>
+<h4 id="introduction">Introduction</h4>
+<p>This guide provides instructions on how to use the firmware scripts to flash PX4 firmware to a device and upload parameters using Docker.</p>
+<h4 id="firmware-flashing">Firmware Flashing</h4>
+<p>The <code>firmware_upload.sh</code> script automates the process of setting up the PX4-Autopilot environment, checking out the desired git branch or tag, and flashing the firmware to a specified platform. If no options are provided, the script will ask for the necessary information through prompts.</p>
+<h5 id="usage">Usage</h5>
+<p>Your device must be connected to your computer via USB. The script will automatically detect the device and flash the firmware.</p>
+<pre><code class="language-sh">/tools/docker_scripts/firmware_upload.sh
+</code></pre>
+<h5 id="options">Options</h5>
+<ul>
+<li><code>-h</code> : Show help message and exit</li>
+<li><code>-b</code> : Specify the git branch.</li>
+<li><code>-t</code> : Specify the git tag (latest or custom).</li>
+<li><code>-p</code> : Specify the target platform (e.g., px4_fmu-v6x).</li>
+<li><code>-a</code> : Automatically clone PX4-Autopilot if not found.</li>
+</ul>
+<h5 id="examples">Examples</h5>
+<pre><code class="language-sh">/tools/docker_scripts/firmware_upload.sh -b main -p px4_fmu-v6x -a
+/tools/docker_scripts/firmware_upload.sh -t latest -p px4_fmu-v6x -a
+</code></pre>
+<h4 id="parameters-upload">Parameters Upload</h4>
+<p>The <code>parameters_upload.sh</code> script uploads parameters to a PX4 device using Docker.</p>
+<h5 id="usage_1">Usage</h5>
+<p>Your device must be connected to your computer via USB. The script will automatically detect the device and upload the parameters.</p>
+<pre><code class="language-sh">/tools/docker_scripts/parameters_upload.sh -f &lt;path_to_parameter_file&gt;
+</code></pre>
+<h5 id="parameter-file-structure">Parameter File Structure</h5>
+<p>The parameter file is a text file containing the parameters to upload. Each line should contain a parameter name and value separated by a space. Float parameters should be written with a decimal point as the type is inferred from the value. <br>
+For example:</p>
+<pre><code>UXRCE_DDS_CFG 1000
+EKF2_ABIAS_INIT 0.15
+</code></pre>
+<p>See the <a href="https://docs.px4.io/main/en/advanced_config/parameter_reference.html">PX4 documentation</a> for a list of parameters.</p>
+<h5 id="options_1">Options</h5>
+<ul>
+<li><code>-h</code> : Show help message and exit</li>
+<li><code>-f</code> : Specify the parameter file defining the parameters to upload.</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../simulation/" class="btn btn-neutral float-left" title="Simulation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../holybro_pixhawk_jetson_baseboard_setup/" class="btn btn-neutral float-right" title="Holybro Pixhawk Jetson Baseboard Setup">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../simulation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../holybro_pixhawk_jetson_baseboard_setup/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

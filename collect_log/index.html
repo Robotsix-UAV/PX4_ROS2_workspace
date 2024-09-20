@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Collecting offboard logs - PX4_ROS2_workspace Documentation</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Collecting offboard logs";
+        var mkdocs_page_input_path = "collect_log.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> PX4_ROS2_workspace Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../quick_start/">Quick Start</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../simulation/">Simulation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../firmware/">Firmware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../holybro_pixhawk_jetson_baseboard_setup/">Holybro Pixhawk Jetson Baseboard Setup</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Collecting offboard logs</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#generate-ssh-key-if-not-done-already">Generate SSH Key (if not done already)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#copy-the-ssh-key-to-each-drone">Copy the SSH Key to Each Drone</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#collecting-logs-from-a-single-drone">Collecting Logs from a Single Drone</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#collecting-logs-from-multiple-drones">Collecting Logs from Multiple Drones</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-an-environment-variable-for-drone-list">Using an Environment Variable for Drone List</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#script-description">Script Description</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../structure/">Repository Structure</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">PX4_ROS2_workspace Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Collecting offboard logs</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="drone-log-collection-script">Drone Log Collection Script</h1>
+<p>This script is designed to collect log files from multiple drones specified as a comma-separated list. It connects to each drone via SSH, retrieves the UAV name, creates a local directory, and synchronizes the logs from the remote drone to the local directory.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before using this script, ensure that:</p>
+<ol>
+<li>You have SSH access to all the drones.</li>
+<li>You have generated SSH keys for passwordless authentication.</li>
+<li>You must have run the <code>install_offboard.sh</code> script on each drone to set up the environment variables and log directories.</li>
+</ol>
+<h3 id="generate-ssh-key-if-not-done-already">Generate SSH Key (if not done already)</h3>
+<pre><code class="language-bash">ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;
+</code></pre>
+<h3 id="copy-the-ssh-key-to-each-drone">Copy the SSH Key to Each Drone</h3>
+<p>To enable passwordless SSH connections to each drone, use the following command:</p>
+<pre><code class="language-bash">ssh-copy-id user@ip_address
+</code></pre>
+<p>Replace <code>user@ip_address</code> with the appropriate username and IP address for each drone.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="collecting-logs-from-a-single-drone">Collecting Logs from a Single Drone</h3>
+<p>To collect logs from a single drone, use the following command:</p>
+<pre><code class="language-bash">./collect_logs.sh user1@192.168.1.101
+</code></pre>
+<p>Replace <code>user1@192.168.1.101</code> with the appropriate <code>user@ip</code> format for your drone.</p>
+<h3 id="collecting-logs-from-multiple-drones">Collecting Logs from Multiple Drones</h3>
+<p>To collect logs from multiple drones, you can specify a comma-separated list of drones in the format <code>user@ip</code>:</p>
+<pre><code class="language-bash">./collect_logs.sh user1@192.168.1.101,user2@192.168.1.102
+</code></pre>
+<h3 id="using-an-environment-variable-for-drone-list">Using an Environment Variable for Drone List</h3>
+<p>Optionally, you can define the drone list as an environment variable, which can be added to your <code>.bashrc</code> for convenience.</p>
+<ol>
+<li>
+<p>Export the drone list:</p>
+<p><code>bash
+export DRONES="user1@192.168.1.101,user2@192.168.1.102,user3@192.168.1.103"</code></p>
+</li>
+<li>
+<p>Run the script using the environment variable:</p>
+<p><code>bash
+./collect_logs.sh $DRONES</code></p>
+</li>
+</ol>
+<p>To make the environment variable persistent, you can add the <code>export DRONES</code> line to your <code>.bashrc</code> file.</p>
+<h3 id="examples">Examples</h3>
+<ul>
+<li>
+<p><strong>Single Drone:</strong></p>
+<p><code>bash
+./collect_logs.sh user1@192.168.1.101</code></p>
+</li>
+<li>
+<p><strong>Multiple Drones:</strong></p>
+<p><code>bash
+./collect_logs.sh user1@192.168.1.101,user2@192.168.1.102</code></p>
+</li>
+<li>
+<p><strong>Using Environment Variable:</strong></p>
+<p><code>bash
+export DRONES="user1@192.168.1.101,user2@192.168.1.102,user3@192.168.1.103"
+./collect_logs.sh $DRONES</code></p>
+</li>
+</ul>
+<h2 id="script-description">Script Description</h2>
+<p>The <code>collect_logs.sh</code> script performs the following steps:</p>
+<ol>
+<li><strong>SSH Connection</strong>: Connects to each drone via SSH using the provided <code>user@ip</code> details.</li>
+<li><strong>UAV Name Retrieval</strong>: Retrieves the <code>UAV_NAME</code> environment variable from the drone.</li>
+<li><strong>Local Directory Creation</strong>: Creates a local directory based on the retrieved <code>UAV_NAME</code> to store the logs.</li>
+<li><strong>Log Synchronization</strong>: Uses <code>rsync</code> to copy the logs from the drone to the local directory.</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../holybro_pixhawk_jetson_baseboard_setup/" class="btn btn-neutral float-left" title="Holybro Pixhawk Jetson Baseboard Setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../structure/" class="btn btn-neutral float-right" title="Repository Structure">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../holybro_pixhawk_jetson_baseboard_setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../structure/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
