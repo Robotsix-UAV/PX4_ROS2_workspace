@@ -92,8 +92,11 @@ echo "$LAUCH_LIST"
 echo "UAV_NAME=$UAV_NAME" > $USER_HOME/.bashrc_offboard
 for LAUNCH_FILE in $LAUCH_LIST; do
     LAUNCH_FILE_WE=$(echo $LAUNCH_FILE | cut -d'.' -f1)  # Extract the file name without extension
-    # Add alias to ~/.bashrc to create a new tmux window for each launch file in the 'uav_session'
-    echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then docker exec ros2_uav_offboard tmux kill-window -t uav_session:$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE\" && docker exec ros2_uav_offboard tmux send-keys -t uav_session:$LAUNCH_FILE_WE \"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\" Enter'" >> $USER_HOME/.bashrc_offboard
+    # Alias to gracefully stop the node
+    echo "alias stop_$LAUNCH_FILE_WE='docker exec ros2_uav_offboard tmux send-keys -t uav_session:$LAUNCH_FILE_WE C-c && sleep 2 && docker exec ros2_uav_offboard tmux kill-window -t uav_session:$LAUNCH_FILE_WE'" >> $USER_HOME/.bashrc_offboard
+
+    # Alias to launch the node
+    echo "alias launch_$LAUNCH_FILE_WE='if docker exec ros2_uav_offboard tmux list-windows -t uav_session | grep -q $LAUNCH_FILE_WE; then stop_$LAUNCH_FILE_WE; fi; docker exec ros2_uav_offboard bash -c \"source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $LAUNCH_FILE_WE\" && docker exec ros2_uav_offboard tmux send-keys -t uav_session:$LAUNCH_FILE_WE \"ros2 launch ros2_uav_px4 $LAUNCH_FILE uav_namespace:=\$UAV_NAME\" Enter'" >> $USER_HOME/.bashrc_offboard
 done
 # Source ~/.bashrc_offboard in ~/.bashrc if it's not already sourced
 if ! grep -q ".bashrc_offboard" $USER_HOME/.bashrc; then
