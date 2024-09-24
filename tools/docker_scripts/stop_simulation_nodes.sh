@@ -9,17 +9,17 @@
 # ==============================================================================
 # Run Simulation Script
 #
-# This script automates the launch of the ROS2 2 nodes for simulation with PX4 Autopilot using Docker.
+# This script automates the stop of the ROS2 2 nodes for simulation with PX4 Autopilot using Docker.
 #
 # Usage:
-#   ./launch_simulation_nodes.sh [options]
+#   ./stop_simulation_nodes.sh [options]
 #
 # Options:
 #   -h      Show help message and exit
 #   -f      Specify the configuration file for the simulation.
 #
 # Example:
-#   ./launch_simulation_nodes.sh -f config.yaml
+#   ./stop_simulation_nodes.sh -f config.yaml
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -77,25 +77,65 @@ if [ -z "${config_file}" ]; then
 fi
 
 # ------------------------------------------------------------------------------
-# Docker command to run simulation nodes
+# Function to gracefully terminate processes in a tmux window
 # ------------------------------------------------------------------------------
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-DOCKER_REPO=robotsix/ros2_uav_px4:main
-docker pull $DOCKER_REPO
-if [ "$(docker ps -q -f name=ros2_uav_px4)" ]; then
-    docker stop ros2_uav_px4
-fi
-docker run -it -d --rm --name ros2_uav_px4 -v $SCRIPT_DIR/../../log:/uav_ws/log:rw $DOCKER_REPO
+shutdown_tmux_window() {
+    local session="$1"
+    local window="$2"
+    local docker_container="$3"
+    local timeout=30  # Total timeout in seconds
+    local interval=1  # Interval between checks in seconds
+
+    if [ -z "$session" ] || [ -z "$window" ] || [ -z "$docker_container" ]; then
+        echo "Usage: shutdown_tmux_window <session> <window> <docker_container>"
+        return 1
+    fi
+
+    echo "Attempting to gracefully terminate processes in tmux window '$window' of session '$session'..."
+
+    # Send Ctrl-C to the specified tmux window
+    docker exec "$docker_container" tmux send-keys -t "${session}:${window}" C-c
+
+    # Initialize elapsed time
+    local elapsed=0
+
+    while [ "$elapsed" -lt "$timeout" ]; do
+        # Get list of current commands in all panes
+        current_commands=$(docker exec "$docker_container" tmux list-panes -t "${session}:${window}" -F '#{pane_current_command}')
+
+        # Flag to determine if any active processes are running
+        active_processes=false
+
+        while read -r cmd; do
+            if [[ "$cmd" != "bash" && "$cmd" != "zsh" && "$cmd" != "sh" ]]; then
+                active_processes=true
+                echo "Active process detected in pane: $cmd"
+            fi
+        done <<< "$current_commands"
+
+        if [ "$active_processes" = false ]; then
+            echo "No active processes detected in any panes. Killing tmux window '$window'..."
+            docker exec "$docker_container" tmux kill-window -t "${session}:${window}"
+            echo "tmux window '$window' has been killed successfully."
+            return 0
+        else
+            sleep "$interval"
+            elapsed=$((elapsed + interval))
+        fi
+    done
+
+    echo "Timeout reached. Some processes are still running. tmux window '$window' was not killed."
+    return 1
+}
 
 # ------------------------------------------------------------------------------
-# Execute the simulation nodes
+# Stop the simulation nodes
 # ------------------------------------------------------------------------------
 # Count the number of UAVs in the configuration file
 sleep 1
 UAV_COUNT=$(( $(yq '.models | length' "$config_file") - 1 ))
 for i in $(seq 0 $UAV_COUNT); do
     UAV_NAME=uav$i
-    docker exec ros2_uav_px4 bash -c "source /ros_ws/install/setup.sh && tmux new-window -t uav_session -n $UAV_NAME"
-    docker exec ros2_uav_px4 tmux send-keys -t uav_session:$UAV_NAME "mkdir -p /uav_ws/log/simulation_$UAV_NAME" Enter
-    docker exec ros2_uav_px4 tmux send-keys -t uav_session:$UAV_NAME "export UAV_CPP_LOG=/uav_ws/log/simulation_$UAV_NAME && ros2 launch ros2_uav_px4 offboard_modes.py uav_namespace:=/$UAV_NAME" Enter
+    shutdown_tmux_window uav_session $UAV_NAME ros2_uav_px4
 done
+docker stop ros2_uav_px4

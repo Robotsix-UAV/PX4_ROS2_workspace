@@ -98,7 +98,8 @@ shutdown_tmux_window() {
     local session="$1"
     local window="$2"
     local docker_container="$3"
-    local timeout=30  # seconds to wait for processes to terminate
+    local timeout=30  # Total timeout in seconds
+    local interval=1  # Interval between checks in seconds
 
     if [ -z "$session" ] || [ -z "$window" ] || [ -z "$docker_container" ]; then
         echo "Usage: shutdown_tmux_window <session> <window> <docker_container>"
@@ -110,31 +111,36 @@ shutdown_tmux_window() {
     # Send Ctrl-C to the specified tmux window
     docker exec "$docker_container" tmux send-keys -t "${session}:${window}" C-c
 
-    # Wait for the specified timeout duration
-    echo "Waiting $timeout seconds for processes to terminate..."
-    sleep "$timeout"
+    # Initialize elapsed time
+    local elapsed=0
 
-    # Get list of current commands in all panes
-    current_commands=$(docker exec "$docker_container" tmux list-panes -t "${session}:${window}" -F '#{pane_current_command}')
+    while [ "$elapsed" -lt "$timeout" ]; do
+        # Get list of current commands in all panes
+        current_commands=$(docker exec "$docker_container" tmux list-panes -t "${session}:${window}" -F '#{pane_current_command}')
 
-    # Flag to determine if any active processes are running
-    active_processes=false
+        # Flag to determine if any active processes are running
+        active_processes=false
 
-    while read -r cmd; do
-        if [[ "$cmd" != "bash" && "$cmd" != "zsh" && "$cmd" != "sh" ]]; then
-            active_processes=true
-            echo "Active process detected in pane: $cmd"
+        while read -r cmd; do
+            if [[ "$cmd" != "bash" && "$cmd" != "zsh" && "$cmd" != "sh" ]]; then
+                active_processes=true
+                echo "Active process detected in pane: $cmd"
+            fi
+        done <<< "$current_commands"
+
+        if [ "$active_processes" = false ]; then
+            echo "No active processes detected in any panes. Killing tmux window '$window'..."
+            docker exec "$docker_container" tmux kill-window -t "${session}:${window}"
+            echo "tmux window '$window' has been killed successfully."
+            return 0
+        else
+            sleep "$interval"
+            elapsed=$((elapsed + interval))
         fi
-    done <<< "$current_commands"
+    done
 
-    if [ "$active_processes" = false ]; then
-        echo "No active processes detected in any panes. Killing tmux window '$window'..."
-        docker exec "$docker_container" tmux kill-window -t "${session}:${window}"
-        echo "tmux window '$window' has been killed successfully."
-    else
-        echo "Some processes are still running. tmux window '$window' was not killed."
-        return 1
-    fi
+    echo "Timeout reached. Some processes are still running. tmux window '$window' was not killed."
+    return 1
 }
 EOF
 
