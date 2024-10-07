@@ -28,6 +28,8 @@ jobs:
             dockerfile: Dockerfile_ros2_builder
           - image: ros2_debug
             dockerfile: Dockerfile_ros2_debug
+          - image: micro_dds_agent
+            dockerfile: Dockerfile_micro_dds_agent
     permissions:
       packages: write
       contents: read
@@ -57,3 +59,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
