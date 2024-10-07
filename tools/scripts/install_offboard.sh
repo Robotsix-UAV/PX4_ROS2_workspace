@@ -48,7 +48,7 @@ DOCKER_IMAGE_AGENT="$REGISTRY/micro_dds_agent:main"
 # ------------------------------------------------------------------------------
 # Pull the Docker image for ROS2 UAV PX4
 # ------------------------------------------------------------------------------
-docker pull $DOCKER_IMAGE_UAV
+docker pull --platform linux/arm64 $DOCKER_IMAGE_UAV
 
 # ------------------------------------------------------------------------------
 # Set up configuration files by copying them from the Docker container to the local workspace
@@ -168,7 +168,7 @@ fi
 # ------------------------------------------------------------------------------
 # Pull the Docker image for microDDS agent
 # ------------------------------------------------------------------------------
-docker pull $DOCKER_IMAGE_AGENT
+docker pull --platform linux/arm64 $DOCKER_IMAGE_AGENT
 
 # ------------------------------------------------------------------------------
 # Start the microDDS agent as a systemd service
