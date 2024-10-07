@@ -13,3 +13,4 @@ gz_sim/custom_plugins/gz_lift_drag_plugin/build/*
 log/*
 !log/collect_logs.sh
 .devcontainer/
+assistant_gpt.log

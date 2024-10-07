@@ -162,6 +162,7 @@ fi
 # ------------------------------------------------------------------------------
 git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
 cd Micro-XRCE-DDS-Agent
+git checkout v2.4.3
 mkdir -p build && cd build
 cmake ..
 make -s
