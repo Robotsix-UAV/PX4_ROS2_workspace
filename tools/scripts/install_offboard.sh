@@ -160,14 +160,7 @@ fi
 # ------------------------------------------------------------------------------
 # Download and compile microDDS agent to enable communication with PX4
 # ------------------------------------------------------------------------------
-git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-cd Micro-XRCE-DDS-Agent
-git checkout v2.4.3
-mkdir -p build && cd build
-cmake ..
-make -s
-make install -s >> /dev/null
-ldconfig /usr/local/lib/
+docker pull robotsix/micro_dds_agent:main
 
 # ------------------------------------------------------------------------------
 # Start automatically the microDDS agent as a systemd service
@@ -178,7 +171,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/MicroXRCEAgent udp4 -p 8888
+ExecStart=/usr/bin/docker run --rm -it -d --name microxrceagent --network host robotsix/micro_dds_agent:main
 Restart=always
 
 [Install]
