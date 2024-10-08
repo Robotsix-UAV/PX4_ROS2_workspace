@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # ==============================================================================
-# ROS2 UAV PX4 Setup Script with Optional Local Docker Registry
+# ROS2 UAV PX4 Setup Script with Optional Local Docker Registry and Micro XRCE-DDS Agent Arguments
 #
 # This script automates the setup of the ROS2 environment for UAV control using Docker and systemd services.
-# It now accepts an optional argument to specify a local Docker registry IP and port for pulling images.
+# It accepts optional arguments to specify a local Docker registry IP and port for pulling images,
+# and custom arguments for the Micro XRCE-DDS Agent.
 #
 # Usage:
-#   ./install_offboard.sh uav_name [local_registry_ip:port]
+#   ./install_offboard.sh [-r local_registry_ip:port] [-a "agent_args"] uav_name
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -24,20 +25,53 @@ fi
 USER_HOME=$(eval echo /home/${SUDO_USER})
 
 # ------------------------------------------------------------------------------
-# Check usage and set UAV name and optional local registry
+# Initialize variables with default values
 # ------------------------------------------------------------------------------
-if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-    echo "Usage: ./install_offboard.sh uav_name [local_registry_ip:port]"
+REGISTRY="robotsix"
+MICRO_AGENT_ARGS=""
+
+# ------------------------------------------------------------------------------
+# Parse options
+# ------------------------------------------------------------------------------
+while getopts ":r:a:h" opt; do
+  case ${opt} in
+    r )
+      REGISTRY=$OPTARG
+      ;;
+    a )
+      MICRO_AGENT_ARGS=$OPTARG
+      ;;
+    h )
+      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
+      exit 0
+      ;;
+    \? )
+      echo "Invalid option: -$OPTARG" >&2
+      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
+      exit 1
+      ;;
+    : )
+      echo "Option -$OPTARG requires an argument." >&2
+      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
+      exit 1
+      ;;
+  esac
+done
+
+# ------------------------------------------------------------------------------
+# Shift parsed options
+# ------------------------------------------------------------------------------
+shift $((OPTIND -1))
+
+# ------------------------------------------------------------------------------
+# Get the UAV name
+# ------------------------------------------------------------------------------
+if [ $# -lt 1 ]; then
+    echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
     exit 1
 fi
 
 UAV_NAME=$1
-
-if [ $# -eq 2 ]; then
-    REGISTRY=$2
-else
-    REGISTRY="robotsix"
-fi
 
 # ------------------------------------------------------------------------------
 # Set Docker image names, prefixed with local registry if provided
@@ -71,7 +105,7 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/docker run --rm -it -d --name ros2_uav_offboard --network host -v $USER_HOME/uav_ws/config:/ros_ws/install/ros2_uav_parameters/install/share/ros2_uav_parameters/config -v $USER_HOME/uav_ws/log:/ros_ws/log $DOCKER_IMAGE_UAV
+ExecStart=/usr/bin/docker run --rm -it -d --name ros2_uav_offboard --network host -v $USER_HOME/uav_ws/config:/ros_ws/install/ros2_uav_parameters/share/ros2_uav_parameters/config -v $USER_HOME/uav_ws/log:/ros_ws/log $DOCKER_IMAGE_UAV
 ExecStop=/usr/bin/docker stop ros2_uav_offboard
 
 [Install]
@@ -171,7 +205,7 @@ fi
 docker pull --platform linux/arm64 $DOCKER_IMAGE_AGENT
 
 # ------------------------------------------------------------------------------
-# Start the microDDS agent as a systemd service
+# Start the microDDS agent as a systemd service with optional custom arguments
 # ------------------------------------------------------------------------------
 cat << EOF > /etc/systemd/system/microxrceagent.service
 [Unit]
@@ -180,7 +214,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/docker run --rm -it -d --name microxrceagent --network host $DOCKER_IMAGE_AGENT
+ExecStart=/usr/bin/docker run --rm -it -d --name microxrceagent --network host --entrypoint /usr/local/bin/MicroXRCEAgent $DOCKER_IMAGE_AGENT $MICRO_AGENT_ARGS
 Restart=always
 
 [Install]
