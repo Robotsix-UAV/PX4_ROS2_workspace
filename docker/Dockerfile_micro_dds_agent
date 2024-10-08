@@ -15,4 +15,4 @@ RUN make -s
 RUN make install
 RUN ldconfig /usr/local/lib
 
-ENTRYPOINT [ "/usr/local/bin/MicroXRCEAgent udp4 -p 8888" ]
+ENTRYPOINT [ "/usr/local/bin/MicroXRCEAgent","udp4","-p","8888" ]
