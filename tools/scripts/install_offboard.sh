@@ -105,6 +105,7 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+ExecStartPre=-/usr/bin/docker rm -f ros2_uav_offboard
 ExecStart=/usr/bin/docker run --rm -it -d --name ros2_uav_offboard --network host -v $USER_HOME/uav_ws/config:/ros_ws/install/ros2_uav_parameters/share/ros2_uav_parameters/config -v $USER_HOME/uav_ws/log:/ros_ws/log $DOCKER_IMAGE_UAV
 ExecStop=/usr/bin/docker stop ros2_uav_offboard
 
@@ -214,6 +215,7 @@ After=network.target
 
 [Service]
 Type=simple
+ExecStartPre=-/usr/bin/docker rm -f microxrceagent
 ExecStart=/usr/bin/docker run --rm -it -d --name microxrceagent --network host --entrypoint /usr/local/bin/MicroXRCEAgent $DOCKER_IMAGE_AGENT $MICRO_AGENT_ARGS
 Restart=always
 

@@ -14,3 +14,4 @@ log/*
 !log/collect_logs.sh
 .devcontainer/
 assistant_gpt.log
+repo_assistant_config.json
