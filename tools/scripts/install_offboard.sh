@@ -29,11 +29,12 @@ USER_HOME=$(eval echo /home/${SUDO_USER})
 # ------------------------------------------------------------------------------
 REGISTRY="robotsix"
 MICRO_AGENT_ARGS=""
+DEVICE_ARG=""
 
 # ------------------------------------------------------------------------------
 # Parse options
 # ------------------------------------------------------------------------------
-while getopts ":r:a:h" opt; do
+while getopts ":r:a:d:h" opt; do
   case ${opt} in
     r )
       REGISTRY=$OPTARG
@@ -41,18 +42,21 @@ while getopts ":r:a:h" opt; do
     a )
       MICRO_AGENT_ARGS=$OPTARG
       ;;
+    d )
+      DEVICE_ARG=$OPTARG
+      ;;
     h )
-      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
+      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] [-d /dev/ttyUSB0] uav_name"
       exit 0
       ;;
     \? )
       echo "Invalid option: -$OPTARG" >&2
-      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
+      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] [-d /dev/ttyUSB0] uav_name"
       exit 1
       ;;
     : )
       echo "Option -$OPTARG requires an argument." >&2
-      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] uav_name"
+      echo "Usage: ./install_offboard.sh [-r local_registry_ip:port] [-a \"agent_args\"] [-d /dev/ttyUSB0] uav_name"
       exit 1
       ;;
   esac
@@ -201,6 +205,15 @@ if ! grep -q ".bashrc_offboard" $USER_HOME/.bashrc; then
 fi
 
 # ------------------------------------------------------------------------------
+# Check if DEVICE_ARG is provided
+# ------------------------------------------------------------------------------
+if [ -n "$DEVICE_ARG" ]; then
+    DEVICE_FLAGS="--device=$DEVICE_ARG"
+else
+    DEVICE_FLAGS=""
+fi
+
+# ------------------------------------------------------------------------------
 # Pull the Docker image for microDDS agent
 # ------------------------------------------------------------------------------
 docker pull --platform linux/arm64 $DOCKER_IMAGE_AGENT
@@ -216,7 +229,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStartPre=-/usr/bin/docker rm -f microxrceagent
-ExecStart=/usr/bin/docker run --rm -it -d --name microxrceagent --network host --entrypoint /usr/local/bin/MicroXRCEAgent $DOCKER_IMAGE_AGENT $MICRO_AGENT_ARGS
+ExecStart=/usr/bin/docker run --rm -it -d --name microxrceagent $DEVICE_FLAGS --network host --entrypoint /usr/local/bin/MicroXRCEAgent $DOCKER_IMAGE_AGENT $MICRO_AGENT_ARGS
 Restart=always
 
 [Install]
