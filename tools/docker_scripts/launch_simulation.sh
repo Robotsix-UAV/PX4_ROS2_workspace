@@ -163,7 +163,7 @@ while IFS= read -r line; do
                         rm -rf "$PX4_DIR/Tools/simulation/gz/models/$(basename $dir)"
                     fi
                     cp -rf "$dir" "$PX4_DIR/Tools/simulation/gz/models/$(basename $dir)"
-                    config_name="666${index}_$(basename $dir)"
+                    config_name="666${index}_gz_$(basename $dir)"
                     if ! grep -q "$(basename $dir)" "$FILE"; then
                         echo "$config_name" >>$TEMP_FILE
                     else

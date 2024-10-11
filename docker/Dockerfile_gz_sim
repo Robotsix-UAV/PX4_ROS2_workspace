@@ -20,10 +20,11 @@ RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pk
 
 RUN cat /etc/apt/sources.list.d/gazebo-stable.list
 
-ENV GZ_VERSION=harmonic
+ENV GZ_VERSION=garden
 RUN apt-get update -qq \
     && apt-get install -y \
     gz-${GZ_VERSION} \
+    libgz-sim7-dev \
     tmuxinator \
     && rm -rf /var/lib/apt/lists/*
 

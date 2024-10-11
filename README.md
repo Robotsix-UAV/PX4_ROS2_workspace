@@ -3,7 +3,7 @@
 ## Overview
 
 PX4_ROS2_workspace is a project workspace integrating PX4 autopilot software with ROS 2. This repository provides the scripts, configurations, and Docker support to facilitate development and deployment of PX4 with ROS 2 in SITL simulation or on real platforms. <br>
-**This repository is only compatible with the main branch of PX4-Autopilot for now. It will be updated to support the stable releases in the future (v1.15 and later).** <br>
+**This repository is only compatible with PX4 v1.14** <br>
 Some of the tools provided can work with previous releases of PX4.
 
 ## Documentation

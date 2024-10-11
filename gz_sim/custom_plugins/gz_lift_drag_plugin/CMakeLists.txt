@@ -3,7 +3,7 @@ project(lift_drag_system)
 
 find_package(gz-cmake3 REQUIRED)
 
-gz_find_package(gz-sim8 REQUIRED)
+gz_find_package(gz-sim7 REQUIRED)
 gz_find_package(gz-plugin2 REQUIRED COMPONENTS register)
 set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
 gz_find_package(gz-common5)
@@ -16,7 +16,7 @@ target_link_libraries(${PROJECT_NAME}
   PUBLIC
   gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
   gz-plugin${GZ_PLUGIN_VER}::register
-  gz-sim8::gz-sim8
+  gz-sim7::gz-sim7
 )
 
 install(
