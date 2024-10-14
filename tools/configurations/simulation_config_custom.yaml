@@ -1,6 +1,6 @@
 world: default
 models:
-  - name: my_custom_quad
+  - name: gz_my_custom_quad
     pose: [0, 0, 0, 0, 0, 0]
-  - name: quad_lift_drag
+  - name: gz_quad_lift_drag
     pose: [2, 0, 0, 0, 0, 0]

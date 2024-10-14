@@ -93,6 +93,7 @@ docker pull --platform linux/arm64 $DOCKER_IMAGE_UAV
 # ------------------------------------------------------------------------------
 mkdir -p $USER_HOME/uav_ws  # Create UAV workspace directory if it doesn't exist
 mkdir -p $USER_HOME/uav_ws/log  # Create logs directory for the UAV
+docker rm -f ros2_uav_px4_cont 2>/dev/null
 docker run --rm -it -d --name ros2_uav_px4_cont $DOCKER_IMAGE_UAV  # Start the Docker container
 docker cp ros2_uav_px4_cont:/ros_ws/install/ros2_uav_parameters/share/ros2_uav_parameters/config $USER_HOME/uav_ws
 docker stop ros2_uav_px4_cont  # Stop the temporary container

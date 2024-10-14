@@ -39,6 +39,8 @@ git config --global --add safe.directory '*'
 #    type: px4_msgs::msg::ActuatorMotors
 #  - topic: /fmu/out/vehicle_acceleration
 #    type: px4_msgs::msg::VehicleAcceleration
+#  - topic: /fmu/out/vehicle_land_detected
+#    type: px4_msgs::msg::VehicleLandDetected
 # ------------------------------------------------------------------------------
 sed -i 's/# - topic: \/fmu\/out\/vehicle_angular_velocity/- topic: \/fmu\/out\/vehicle_angular_velocity/' ./src/modules/uxrce_dds_client/dds_topics.yaml
 sed -i 's/#   type: px4_msgs::msg::VehicleAngularVelocity/  type: px4_msgs::msg::VehicleAngularVelocity/' ./src/modules/uxrce_dds_client/dds_topics.yaml
@@ -50,6 +52,9 @@ if ! grep -q "/fmu/out/actuator_motors" ./src/modules/uxrce_dds_client/dds_topic
 fi
 if ! grep -q "/fmu/out/vehicle_acceleration" ./src/modules/uxrce_dds_client/dds_topics.yaml; then
     sed -i '/publications:/a \  - topic: \/fmu\/out\/vehicle_acceleration\n    type: px4_msgs::msg::VehicleAcceleration' ./src/modules/uxrce_dds_client/dds_topics.yaml
+fi
+if ! grep -q "/fmu/out/vehicle_land_detected" ./src/modules/uxrce_dds_client/dds_topics.yaml; then
+    sed -i '/publications:/a \  - topic: \/fmu\/out\/vehicle_land_detected\n    type: px4_msgs::msg::VehicleLandDetected' ./src/modules/uxrce_dds_client/dds_topics.yaml
 fi
 
 # ------------------------------------------------------------------------------

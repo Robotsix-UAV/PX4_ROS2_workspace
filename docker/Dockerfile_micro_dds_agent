@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
 WORKDIR /Micro-XRCE-DDS-Agent
-RUN git checkout v2.4.3
+RUN git checkout 57d086216d01ec43121845d385894a25987f8a2c
 WORKDIR /Micro-XRCE-DDS-Agent/build
 RUN cmake ..
 RUN make -s
