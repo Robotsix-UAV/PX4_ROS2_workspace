@@ -11,6 +11,7 @@ RUN apt-get update -qq \
     lsb-release \
     git \
     g++ \
+    mesa-utils \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && chmod a+x /usr/local/bin/yq

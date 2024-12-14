@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "FROM docker src",
+            "type": "shell",
+            "command": "docker cp ros2_uav_offboard:/ros_ws/src ~/uav_ws/src",
+            "problemMatcher": []
+        },
+        {
+            "label": "TO docker copy local and build",
+            "type": "shell",
+            "command": "docker exec -it ros2_uav_offboard /bin/bash -c 'if ! command -v rsync &> /dev/null; then apt-get update && apt-get install -y rsync; fi' && rsync -e 'docker exec -i' -av --update ~/uav_ws/src/ ros2_uav_offboard:/ros_ws/src && docker exec -it ros2_uav_offboard /bin/bash -c 'source /ros_ws/install/setup.bash && colcon build' && docker cp ros2_uav_offboard:/ros_ws/install ~/uav_ws/install",
+            "problemMatcher": []
+        },
+        {
+            "label": "TO docker install",
+            "type": "shell",
+            "command": "docker cp ~/uav_ws/install ros2_uav_offboard:/ros_ws/install",
+        }
+    ]
+}

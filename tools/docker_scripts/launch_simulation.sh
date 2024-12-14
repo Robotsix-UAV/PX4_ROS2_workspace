@@ -214,6 +214,7 @@ fi
 CONFIG_DIR=$(readlink -f $(dirname "$config_file"))
 CONFIG_FILE=$(basename "$config_file")
 xhost + && docker run -d -it --rm --name px4_sitl --runtime=nvidia \
+    -e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
     -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev/dri:/dev/dri \
     -w "$SCRIPT_DIR" -v $SCRIPT_DIR/../../PX4-Autopilot:$SCRIPT_DIR/../../PX4-Autopilot:rw \
     -v $SCRIPT_DIR/../scripts:$SCRIPT_DIR:ro \
