@@ -1,4 +1,4 @@
-model_name: "my_custom_quad"
+model_name: "quad_lift_drag"
 arm_length: 0.5 # in meters
 num_motors: 4 # Should be at least 2 and even
 angle_offset: 45 # in degrees
