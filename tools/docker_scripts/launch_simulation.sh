@@ -57,14 +57,6 @@ command -v docker >/dev/null 2>&1 || {
 }
 
 # ------------------------------------------------------------------------------
-# Check the dependency nvidia-container-runtime required for the SITL simulation
-# ------------------------------------------------------------------------------
-if ! docker info | grep -q "nvidia"; then
-    echo -e "${RED}nvidia-container-runtime is not installed. Aborting.${NC}"
-    exit 1
-fi
-
-# ------------------------------------------------------------------------------
 # Parse command-line options
 # ------------------------------------------------------------------------------
 while getopts "hb:t:f:a" opt; do
@@ -213,7 +205,7 @@ fi
 # TODO: Embed the script in the container
 CONFIG_DIR=$(readlink -f $(dirname "$config_file"))
 CONFIG_FILE=$(basename "$config_file")
-xhost + && docker run -d -it --rm --name px4_sitl --runtime=nvidia \
+xhost + && docker run -d -it --rm --name px4_sitl \
     -e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
     -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev/dri:/dev/dri \
     -w "$SCRIPT_DIR" -v $SCRIPT_DIR/../../PX4-Autopilot:$SCRIPT_DIR/../../PX4-Autopilot:rw \
