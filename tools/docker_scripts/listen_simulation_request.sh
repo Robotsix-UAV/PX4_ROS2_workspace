@@ -10,7 +10,7 @@ while true; do
     case $message in
 	    "simulation_up")
 	        echo "Starting simulation"
-	        ./launch_simulation.sh -f ../configurations/simulation_config_custom.yaml -t release/1.14
+	        ./launch_simulation.sh -f ../configurations/simulation_config_custom.yaml #-t release/1.14
 	        ;;
 
 	    "simulation_down")

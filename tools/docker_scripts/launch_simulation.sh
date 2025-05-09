@@ -197,6 +197,7 @@ DOCKER_REPO=robotsix/gz_sim:main
 docker pull $DOCKER_REPO
 if [ "$(docker ps -q -f name=px4_sitl)" ]; then
     docker stop px4_sitl
+    sleep 1
 fi
 
 # ------------------------------------------------------------------------------
